@@ -166,10 +166,69 @@ void Adafruit_SharpMem::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   }
 
-  if (color) {
+  switch (color) {
+  case 7:
+    // line pattern reversed
+    if (y % 3 == 2 - (x % 3)) {
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    }
+    break;
+  case 6:
+    // line pattern
+    if (y % 3 == x % 3) {
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    }
+    break;
+  case 5: // PATTERN
+    // V1
+    if ((y % 4 == 0 && x % 4 == 2) || // line 0
+        (x % 2 == 1 && y % 2 == 1) || // line 1 & 3
+        (y % 4 == 2 && x % 4 == 0)    // line 2
+    ) {
+      // black
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    }
+
+    break;
+  case 4: // LIGHT lighter gray
+    if (y % 2 != 0) {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    } else if ((x + 2 * ((y / 2) % 2)) % 4 == 0) { // on
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    }
+    break;
+  case 3:             // DARK darker gray
+    if (y % 2 != 0) { // off
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    } else if ((x + 2 * ((y / 2) % 2)) % 4 == 0) { // on
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    }
+    break;
+  case 2: // GRAY medium gray
+    if (((x + y) % 2 == 0)) {
+      sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
+    } else {
+      sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+    }
+    break;
+  case 1: // WHITE white
     sharpmem_buffer[(y * WIDTH + x) / 8] |= pgm_read_byte(&set[x & 7]);
-  } else {
+    break;
+  default:
+  case 0: // BLACK black
     sharpmem_buffer[(y * WIDTH + x) / 8] &= pgm_read_byte(&clr[x & 7]);
+
+    break;
   }
 }
 

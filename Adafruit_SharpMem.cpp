@@ -334,3 +334,14 @@ void Adafruit_SharpMem::refresh(void) {
 void Adafruit_SharpMem::clearDisplayBuffer() {
   memset(sharpmem_buffer, 0xff, (WIDTH * HEIGHT) / 8);
 }
+
+
+/**************************************************************************/
+/*!
+    @brief fills the display buffer with contents of bitmap without outputting to the display
+*/
+/**************************************************************************/
+
+void Adafruit_SharpMem::setBitmap(uint8_t *bitmap) {
+  memcpy(sharpmem_buffer, bitmap, (WIDTH * HEIGHT) / 8);
+}

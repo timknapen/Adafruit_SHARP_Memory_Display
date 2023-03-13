@@ -46,6 +46,7 @@ public:
   void clearDisplay();
   void refresh(void);
   void clearDisplayBuffer();
+  void setBitmap(uint8_t *bitmap);
 
 private:
   Adafruit_SPIDevice *spidev = NULL;

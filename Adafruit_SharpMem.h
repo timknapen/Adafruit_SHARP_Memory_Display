@@ -47,7 +47,7 @@ public:
   void refresh(void);
   void clearDisplayBuffer();
   void setBitmap(uint8_t *bitmap);
-  void drawFatLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t width,
+  void drawFatLine(int x0, int y0, int x1, int y1, int strokeWidth,
                             uint16_t color);
 
 private:

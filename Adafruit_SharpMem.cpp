@@ -272,9 +272,9 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
     @brief Draw a fat line
 */
 /**************************************************************************/
-void Adafruit_SharpMem::drawFatLine(int16_t x0, int16_t y0, // first point
-                                    int16_t x1, int16_t y1, // second point
-                                    int16_t strokeWidth,    // stroke width
+void Adafruit_SharpMem::drawFatLine(int x0, int y0, // first point
+                                    int x1, int y1, // second point
+                                    int strokeWidth,    // stroke width
                                     uint16_t color) {
   if (strokeWidth < 1) {
     return;
@@ -294,13 +294,13 @@ void Adafruit_SharpMem::drawFatLine(int16_t x0, int16_t y0, // first point
   py = (float)strokeWidth * py / l;
 
   // finally draw our line!
-  fillTriangle(x0 + px, y0 + py, // a
-               x1 + px, y1 + py, // b
-               x1 - px, y1 - py, // c
+  fillTriangle(x0 + (int)px, y0 + (int)py, // a
+               x1 + (int)px, y1 + (int)py, // b
+               x1 - (int)px, y1 - (int)py, // c
                color);
-  fillTriangle(x0 + px, y0 + py, // a
-               x1 - px, y1 - py, // c
-               x0 - px, y0 - py, // d
+  fillTriangle(x0 + (int)px, y0 + (int)py, // a
+               x1 - (int)px, y1 - (int)py, // c
+               x0 - (int)px, y0 - (int)py, // d
                color);
 }
 

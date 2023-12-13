@@ -273,19 +273,20 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
 */
 /**************************************************************************/
 void Adafruit_SharpMem::drawFatLine(int16_t x0, int16_t y0, // first point
-                                 int16_t x1, int16_t y1, // second point
-                                 int16_t strokeWidth,    // stroke width
-                                 uint16_t color) {
+                                    int16_t x1, int16_t y1, // second point
+                                    int16_t strokeWidth,    // stroke width
+                                    uint16_t color) {
   if (strokeWidth < 1) {
     return;
   }
   // create perpendicular vector
   float px = y1 - y0;
-  float py = x0 - x1;
+  float py = -(x1 - x0);
   // calculate length to normalize perpendicular vector
   float l = sqrt(px * px + py * py);
-  if (l == 0) {
+  if (l < 1) {
     // do not divide by zero
+    // do not draw a line too short
     return;
   }
   // normalize and scale to strokewidth

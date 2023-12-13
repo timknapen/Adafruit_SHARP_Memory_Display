@@ -269,6 +269,42 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
 
 /**************************************************************************/
 /*!
+    @brief Draw a fat line
+*/
+/**************************************************************************/
+void Adafruit_SharpMem::drawLine(int16_t x0, int16_t y0, // first point
+                                 int16_t x1, int16_t y1, // second point
+                                 int16_t strokeWidth,    // stroke width
+                                 uint16_t color) {
+  if (strokeWidth < 1) {
+    return;
+  }
+  // create perpendicular vector
+  float px = y1 - y0;
+  float py = x0 - x1;
+  // calculate length to normalize perpendicular vector
+  float l = sqrt(px * px + py * py);
+  if (l == 0) {
+    // do not divide by zero
+    return;
+  }
+  // normalize and scale to strokewidth
+  px = (float)strokeWidth * px / l;
+  py = (float)strokeWidth * py / l;
+
+  // finally draw our line!
+  fillTriangle(x0 + px, y0 + py, // a
+               x1 + px, y1 + py, // b
+               x1 - px, y1 - py, // c
+               color);
+  fillTriangle(x0 + px, y0 + py, // a
+               x1 - px, y1 - py, // c
+               x0 - px, y0 - py, // d
+               color);
+}
+
+/**************************************************************************/
+/*!
     @brief Clears the screen
 */
 /**************************************************************************/
@@ -335,10 +371,10 @@ void Adafruit_SharpMem::clearDisplayBuffer() {
   memset(sharpmem_buffer, 0xff, (WIDTH * HEIGHT) / 8);
 }
 
-
 /**************************************************************************/
 /*!
-    @brief fills the display buffer with contents of bitmap without outputting to the display
+    @brief fills the display buffer with contents of bitmap without outputting
+   to the display
 */
 /**************************************************************************/
 

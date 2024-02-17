@@ -383,10 +383,9 @@ void Adafruit_SharpMem::setBitmap(uint8_t *bitmap) {
   memcpy(sharpmem_buffer, bitmap, (WIDTH * HEIGHT) / 8);
 }
 
-
 /**************************************************************************/
 void Adafruit_SharpMem::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
-                            uint16_t color) {
+                                 uint16_t color) {
   for (int16_t i = y; i < y + h; i++) {
     drawFastHLine(x, i, w, color);
   }
@@ -486,17 +485,86 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       startByteBitMask |= set[i]; // CHANGED
       remainingWidthBits--;
     }
-    if (color == 2) { // GRAY
+
+    if (color == 7) {
+      uint8_t pattern;
+      switch (y % 4) {
+      case 0:
+        pattern = 0x77;
+        break;
+      case 1:
+        pattern = 0xBB;
+        break;
+      case 2:
+        pattern = 0xDD;
+        break;
+      case 3:
+        pattern = 0xEE;
+        break;
+      }
+      *ptr &= ~(startByteBitMask & ~pattern);
+      *ptr |= startByteBitMask & pattern;
+    } else if (color == 6) {
+      uint8_t pattern;
+      switch (y % 4) {
+      case 0:
+        pattern = 0xEE;
+        break;
+      case 1:
+        pattern = 0xDD;
+        break;
+      case 2:
+        pattern = 0xBB;
+        break;
+      case 3:
+        pattern = 0x77;
+        break;
+      }
+      *ptr &= ~(startByteBitMask & ~pattern);
+      *ptr |= startByteBitMask & pattern;
+    } else if (color == 5) {
+      uint8_t pattern;
+      switch (y % 4) {
+      case 0: // 0x11
+        pattern = 0xEE;
+        break;
+      case 1: // 0x22
+        pattern = 0x55;
+        break;
+      case 2: // 0xBB
+        pattern = 0xBB;
+        break;
+      case 3: // 0x88
+        pattern = 0x55;
+        break;
+      }
+      *ptr &= ~(startByteBitMask & ~pattern);
+      *ptr |= startByteBitMask & pattern;
+    } else if (color == 4) { // LIGHT GRAY
+      if (y % 2 != 0) {      // off
+        *ptr |= startByteBitMask;
+      } else { // on every other pixel
+        *ptr &= ~(startByteBitMask & ~0x55);
+        *ptr |= startByteBitMask & 0x55;
+      }
+    } else if (color == 3) { // DARK GRAY
+      if (y % 2 != 0) {      // off
+        *ptr &= ~startByteBitMask;
+      } else { // on every other pixel
+        *ptr &= ~(startByteBitMask & ~0xAA);
+        *ptr |= startByteBitMask & 0xAA;
+      }
+    } else if (color == 2) { // GRAY
       if (y % 2 == 0) {
         *ptr &= ~(startByteBitMask & ~0xAA);
         *ptr |= startByteBitMask & 0xAA;
       } else {
         *ptr &= ~(startByteBitMask & ~0x55);
-         *ptr |= startByteBitMask & 0x55;
+        *ptr |= startByteBitMask & 0x55;
       }
-    } else if (color == 1) {
+    } else if (color == 1) { // white
       *ptr |= startByteBitMask;
-    } else {
+    } else { // black
       *ptr &= ~startByteBitMask;
     }
 
@@ -508,7 +576,65 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
     size_t remainingWholeBytes = remainingWidthBits / 8;
     size_t lastByteBits = remainingWidthBits % 8;
     uint8_t wholeByteColor = color > 0 ? 0xFF : 0x00;
-    if (color == 2) { // GRAY
+
+    if (color == 7) {
+      switch (y % 4) {
+      case 0:
+        wholeByteColor = 0x77;
+        break;
+      case 1:
+        wholeByteColor = 0xBB;
+        break;
+      case 2:
+        wholeByteColor = 0xDD;
+        break;
+      case 3:
+        wholeByteColor = 0xEE;
+        break;
+      }
+    } else if (color == 6) {
+      switch (y % 4) {
+      case 0:
+        wholeByteColor = 0xEE;
+        break;
+      case 1:
+        wholeByteColor = 0xDD;
+        break;
+      case 2:
+        wholeByteColor = 0xBB;
+        break;
+      case 3:
+        wholeByteColor = 0x77;
+        break;
+      }
+    } else if (color == 5) {
+      switch (y % 4) {
+      case 0: // 0x11
+        wholeByteColor = 0xEE;
+        break;
+      case 1: // 0x22
+        wholeByteColor = 0x55;
+        break;
+      case 2: // 0xBB
+        wholeByteColor = 0xBB;
+        break;
+      case 3: // 0x88
+        wholeByteColor = 0x55;
+        break;
+      }
+    } else if (color == 4) {
+      if (y % 2 != 0) { // off
+        wholeByteColor = 0xFF;
+      } else { // on every other pixel
+        wholeByteColor = 0x55;
+      }
+    } else if (color == 3) { // DARK GRAY
+      if (y % 2 != 0) {      // off
+        wholeByteColor = 0x00;
+      } else { // on every other pixel
+        wholeByteColor = 0xAA;
+      }
+    } else if (color == 2) { // GRAY
       if (y % 2 == 0) {
         wholeByteColor = 0xAA;
       } else {
@@ -525,7 +651,75 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       }
       ptr += remainingWholeBytes;
 
-      if (color == 2) {
+      if (color == 7) {
+        uint8_t pattern;
+        switch (y % 4) {
+        case 0:
+          pattern = 0x77;
+          break;
+        case 1:
+          pattern = 0xBB;
+          break;
+        case 2:
+          pattern = 0xDD;
+          break;
+        case 3:
+          pattern = 0xEE;
+          break;
+        }
+        *ptr &= ~(lastByteBitMask & ~pattern);
+        *ptr |= lastByteBitMask & pattern;
+      } else if (color == 6) {
+        uint8_t pattern;
+        switch (y % 4) {
+        case 0:
+          pattern = 0xEE;
+          break;
+        case 1:
+          pattern = 0xDD;
+          break;
+        case 2:
+          pattern = 0xBB;
+          break;
+        case 3:
+          pattern = 0x77;
+          break;
+        }
+        *ptr &= ~(lastByteBitMask & ~pattern);
+        *ptr |= lastByteBitMask & pattern;
+      } else if (color == 5) {
+        uint8_t pattern;
+        switch (y % 4) {
+        case 0: // 0x11
+          pattern = 0xEE;
+          break;
+        case 1: // 0x22
+          pattern = 0x55;
+          break;
+        case 2: // 0xBB
+          pattern = 0xBB;
+          break;
+        case 3: // 0x88
+          pattern = 0x55;
+          break;
+        }
+        *ptr &= ~(lastByteBitMask & ~pattern);
+        *ptr |= lastByteBitMask & pattern;
+      } else if (color == 4) { // LIGHT GRAY
+        if (y % 2 != 0) {      // off
+          *ptr |= lastByteBitMask;
+        } else { // on every other pixel
+          *ptr &= ~(lastByteBitMask & ~0x55);
+          *ptr |= lastByteBitMask & 0x55;
+        }
+      } else if (color == 3) { // DARK GRAY
+        if (y % 2 != 0) {      // off
+          *ptr &= ~lastByteBitMask;
+        } else { // on every other pixel
+          *ptr &= ~(lastByteBitMask & ~0xAA);
+          *ptr |= lastByteBitMask & 0xAA;
+        }
+      } else if (color == 2) {
         if (y % 2 == 0) {
           *ptr &= ~(lastByteBitMask & ~0xAA);
           *ptr |= lastByteBitMask & 0xAA;

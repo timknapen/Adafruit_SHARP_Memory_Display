@@ -107,7 +107,7 @@ Adafruit_SharpMem::Adafruit_SharpMem(SPIClass *theSPI, uint8_t cs,
  *
  * @return boolean true: success false: failure
  */
-boolean Adafruit_SharpMem::begin(void) {
+bool Adafruit_SharpMem::begin(void) {
   if (!spidev->begin()) {
     return false;
   }

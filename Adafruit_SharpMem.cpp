@@ -487,7 +487,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
     }
 
     if (color == 7) {
-      uint8_t pattern;
+      uint8_t pattern = 0x00;
       switch (y % 4) {
       case 0:
         pattern = 0x77;
@@ -505,7 +505,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       *ptr &= ~(startByteBitMask & ~pattern);
       *ptr |= startByteBitMask & pattern;
     } else if (color == 6) {
-      uint8_t pattern;
+      uint8_t pattern = 0x00;
       switch (y % 4) {
       case 0:
         pattern = 0xEE;
@@ -523,7 +523,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       *ptr &= ~(startByteBitMask & ~pattern);
       *ptr |= startByteBitMask & pattern;
     } else if (color == 5) {
-      uint8_t pattern;
+      uint8_t pattern = 0x00;
       switch (y % 4) {
       case 0: // 0x11
         pattern = 0xEE;
@@ -652,7 +652,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
       ptr += remainingWholeBytes;
 
       if (color == 7) {
-        uint8_t pattern;
+        uint8_t pattern = 0x00;
         switch (y % 4) {
         case 0:
           pattern = 0x77;
@@ -670,7 +670,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
         *ptr &= ~(lastByteBitMask & ~pattern);
         *ptr |= lastByteBitMask & pattern;
       } else if (color == 6) {
-        uint8_t pattern;
+        uint8_t pattern = 0x00;
         switch (y % 4) {
         case 0:
           pattern = 0xEE;
@@ -688,7 +688,7 @@ void Adafruit_SharpMem::drawFastRawHLine(int16_t x, int16_t y, int16_t w,
         *ptr &= ~(lastByteBitMask & ~pattern);
         *ptr |= lastByteBitMask & pattern;
       } else if (color == 5) {
-        uint8_t pattern;
+        uint8_t pattern = 0x00;
         switch (y % 4) {
         case 0: // 0x11
           pattern = 0xEE;

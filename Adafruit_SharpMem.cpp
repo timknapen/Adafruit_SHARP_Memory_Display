@@ -377,7 +377,7 @@ void Adafruit_SharpMem::clearDisplayBuffer() {
     @brief access to the raw display buffer
 */
 /**************************************************************************/
-uint8_t *Adafruit_SharpMem::copyPixelBuffer(uint8_t *bitmap) {
+void Adafruit_SharpMem::copyPixelBuffer(uint8_t *bitmap) {
   memcpy(bitmap, sharpmem_buffer, (WIDTH * HEIGHT) / 8);
 }
 /**************************************************************************/

@@ -54,6 +54,7 @@ public:
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
   void drawFastRawVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   void drawFastRawHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  void copyPixelBuffer(uint8_t *bitmap);
 
 private:
   Adafruit_SPIDevice *spidev = NULL;

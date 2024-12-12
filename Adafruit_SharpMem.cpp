@@ -368,8 +368,8 @@ void Adafruit_SharpMem::refresh(void) {
     @brief Clears the display buffer without outputting to the display
 */
 /**************************************************************************/
-void Adafruit_SharpMem::copyPixelBuffer(uint8_t *bitmap) {
-    memcpy(bitmap, sharpmem_buffer, (WIDTH * HEIGHT) / 8);
+void Adafruit_SharpMem::clearDisplayBuffer() {
+  memset(sharpmem_buffer, 0xff, (WIDTH * HEIGHT) / 8);
 }
 
 /**************************************************************************/
@@ -377,8 +377,9 @@ void Adafruit_SharpMem::copyPixelBuffer(uint8_t *bitmap) {
     @brief access to the raw display buffer
 */
 /**************************************************************************/
-uint8_t *Adafruit_SharpMem::getPixelBuffer() { return sharpmem_buffer; }
-
+uint8_t *Adafruit_SharpMem::copyPixelBuffer(uint8_t *bitmap) {
+  memcpy(bitmap, sharpmem_buffer, (WIDTH * HEIGHT) / 8);
+}
 /**************************************************************************/
 /*!
     @brief fills the display buffer with contents of bitmap without outputting

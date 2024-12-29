@@ -400,6 +400,58 @@ void Adafruit_SharpMem::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 }
 
 /**************************************************************************/
+void Adafruit_SharpMem::fillCircle(int16_t x0, int16_t y0, int16_t r,
+                                   uint16_t color) {
+  startWrite();
+  writeFastHLine(x0 - r, y0, 2 * r + 1, color);
+  fillCircleHelper(x0, y0, r, 3, 0, color);
+  endWrite();
+}
+
+/**************************************************************************/
+//*
+void Adafruit_SharpMem::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
+                                         uint8_t corners, int16_t delta,
+                                         uint16_t color) {
+  int16_t f = 1 - r;
+  int16_t ddF_y = 1;
+  int16_t ddF_x = -2 * r;
+  int16_t y = 0;
+  int16_t x = r;
+  int16_t py = y;
+  int16_t px = x;
+
+  delta++; // Avoid some +1's in the loop
+
+  while (y < x) {
+    if (f >= 0) {
+      x--;
+      ddF_x += 2;
+      f += ddF_x;
+    }
+    y++;
+    ddF_y += 2;
+    f += ddF_y;
+    // These checks avoid double-drawing certain lines, important
+    // for the SSD1306 library which has an INVERT drawing mode.
+    if (y < (x + 1)) {
+      if (corners & 1)
+        writeFastHLine(x0 - x, y0 + y, 2 * x + delta, color);
+      if (corners & 2)
+        writeFastHLine(x0 - x, y0 - y, 2 * x + delta, color);
+    }
+    if (x != px) {
+      if (corners & 1)
+        writeFastHLine(x0 - py, y0 + px, 2 * py + delta, color);
+      if (corners & 2)
+        writeFastHLine(x0 - py, y0 - px, 2 * py + delta, color);
+      px = x;
+    }
+    py = y;
+  }
+}
+
+/**************************************************************************/
 void Adafruit_SharpMem::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                       uint16_t color) {
   if (w < 0) { // Convert negative widths to positive equivalent
